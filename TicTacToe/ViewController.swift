@@ -32,6 +32,9 @@ class ViewController: UIViewController {
     var XS = "X"
     var board = [UIButton]()
     
+    var OsScore = 0
+    var XsScore = 0
+    
     override func viewDidLoad() 
     {
         super.viewDidLoad()
@@ -55,15 +58,76 @@ class ViewController: UIViewController {
     {
         addToBoard(sender)
         
+        if checkForVictory(XS)
+        {
+            XsScore += 1
+            resultAlert(title: "X WINS!")
+        }
+        
+        if checkForVictory(OS)
+        {
+            OsScore += 1
+            resultAlert(title: "O WINS!")
+        }
+        
         if(fullBoard())
         {
             resultAlert(title: "Draw")
         }
     }
     
+    func checkForVictory(_ s :String) -> Bool
+    {
+        //Horizontal
+        if thisSymbol(a1, s) && thisSymbol(a2, s) && thisSymbol(a3, s)
+        {
+            return true
+        }
+        if thisSymbol(b1, s) && thisSymbol(b2, s) && thisSymbol(b3, s)
+        {
+            return true
+        }
+        if thisSymbol(c1, s) && thisSymbol(c2, s) && thisSymbol(c3, s)
+        {
+            return true
+        }
+        
+        // Vertical
+        if thisSymbol(a1, s) && thisSymbol(b1, s) && thisSymbol(c1, s)
+        {
+            return true
+        }
+        if thisSymbol(a2, s) && thisSymbol(b2, s) && thisSymbol(c2, s)
+        {
+            return true
+        }
+        if thisSymbol(a3, s) && thisSymbol(b3, s) && thisSymbol(c3, s)
+        {
+            return true
+        }
+        
+        //Diagonal
+        if thisSymbol(a1, s) && thisSymbol(b2, s) && thisSymbol(c3, s)
+        {
+            return true
+        }
+        if thisSymbol(a3, s) && thisSymbol(b2, s) && thisSymbol(c1, s)
+        {
+            return true
+        }
+
+        return false
+    }
+    
+    func thisSymbol(_ button: UIButton, _ symbol: String) -> Bool
+    {
+        return button.title(for: .normal) == symbol
+    }
+    
     func resultAlert(title: String)
     {
-        let ac = UIAlertController(title: title, message: nil, preferredStyle: .actionSheet)
+        let message = "\nOs " + String(OsScore) + "\n\nXs " + String(XsScore)
+        let ac = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
         ac.addAction(UIAlertAction(title: "Reset", style: .default, handler: { (_) in
             self.resetBoard()
         }))
@@ -80,12 +144,12 @@ class ViewController: UIViewController {
         if(firstTurn == Turn.Os)
         {
             firstTurn = Turn.Xs
-            turnLabel.text = XS
+            self.turnLabel.text = XS
         }
         else if(firstTurn == Turn.Xs)
             {
                 firstTurn = Turn.Os
-                turnLabel.text = OS
+            self.turnLabel.text = OS
             }
         currentTurn = firstTurn
     }
